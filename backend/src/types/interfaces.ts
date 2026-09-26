@@ -18,3 +18,9 @@ export interface AuditContext {
   entity: string;
   entityId?: string;
 }
+
+export interface SubmitDesignInput {
+  comment?: string;
+  description?: string;
+  fileUrls?: string[];
+}

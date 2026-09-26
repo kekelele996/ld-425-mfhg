@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module, NestModule, OnModuleInit } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, OnModuleInit, RequestMethod } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { databaseConfig } from './config/database.config';
 import { ProjectController } from './controllers/project.controller';
@@ -9,6 +9,7 @@ import { ConstructionController } from './controllers/construction.controller';
 import { HealthController } from './controllers/health.controller';
 import { RenovationProject } from './models/project.entity';
 import { DesignPhase } from './models/designPhase.entity';
+import { DesignVersionRecord } from './models/designVersionRecord.entity';
 import { MaterialItem } from './models/materialItem.entity';
 import { BudgetItem } from './models/budgetItem.entity';
 import { ConstructionNode } from './models/constructionNode.entity';
@@ -22,11 +23,13 @@ import { AuditLogService } from './services/auditLog.service';
 import { SeedService } from './database/seeds/seed.service';
 import { authMiddleware } from './middlewares/auth.middleware';
 import { auditLogMiddleware } from './middlewares/auditLog.middleware';
+import { rbacMiddleware } from './middlewares/rbac.middleware';
+import { UserRole } from './types/enums';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot(databaseConfig),
-    TypeOrmModule.forFeature([RenovationProject, DesignPhase, MaterialItem, BudgetItem, ConstructionNode, AuditLog])
+    TypeOrmModule.forFeature([RenovationProject, DesignPhase, DesignVersionRecord, MaterialItem, BudgetItem, ConstructionNode, AuditLog])
   ],
   controllers: [HealthController, ProjectController, DesignController, MaterialController, BudgetController, ConstructionController],
   providers: [ProjectService, DesignService, MaterialService, BudgetService, ConstructionService, AuditLogService, SeedService]
@@ -36,6 +39,9 @@ export class AppModule implements OnModuleInit, NestModule {
 
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(authMiddleware, auditLogMiddleware).forRoutes('*');
+    consumer
+      .apply(rbacMiddleware([UserRole.Owner]))
+      .forRoutes({ path: 'designs/:id/review', method: RequestMethod.POST });
   }
 
   async onModuleInit() {

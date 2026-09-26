@@ -32,6 +32,12 @@ export enum PhaseStatus {
   Approved = 'Approved'
 }
 
+export enum DesignReviewAction {
+  Submit = 'Submit',
+  Approve = 'Approve',
+  Reject = 'Reject'
+}
+
 export enum PurchaseStatus {
   NotPurchased = 'NotPurchased',
   Ordered = 'Ordered',

@@ -19,6 +19,6 @@ export function authMiddleware(req: Request, _res: Response, next: NextFunction)
       req.user = undefined;
     }
   }
-  req.user ??= { id: 'demo-owner', role: UserRole.ProjectManager, name: 'Demo Manager' };
+  req.user ??= { id: 'demo-owner', role: UserRole.Owner, name: 'Demo Owner' };
   next();
 }

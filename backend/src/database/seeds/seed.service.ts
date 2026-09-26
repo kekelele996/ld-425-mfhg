@@ -4,9 +4,10 @@ import { Repository } from 'typeorm';
 import { BudgetItem } from '../../models/budgetItem.entity';
 import { ConstructionNode } from '../../models/constructionNode.entity';
 import { DesignPhase } from '../../models/designPhase.entity';
+import { DesignVersionRecord } from '../../models/designVersionRecord.entity';
 import { MaterialItem } from '../../models/materialItem.entity';
 import { RenovationProject } from '../../models/project.entity';
-import { AcceptanceStatus, BudgetCategory, ConstructionPhase, DecorStyle, HouseType, PhaseStatus, ProjectStatus, PurchaseStatus } from '../../types/enums';
+import { AcceptanceStatus, BudgetCategory, ConstructionPhase, DecorStyle, DesignReviewAction, HouseType, PhaseStatus, ProjectStatus, PurchaseStatus } from '../../types/enums';
 import { calculateMaterialTotal, calculateVariance } from '../../utils/budgetCalculator';
 
 @Injectable()
@@ -14,6 +15,7 @@ export class SeedService {
   constructor(
     @InjectRepository(RenovationProject) private readonly projectRepo: Repository<RenovationProject>,
     @InjectRepository(DesignPhase) private readonly designRepo: Repository<DesignPhase>,
+    @InjectRepository(DesignVersionRecord) private readonly designRecordRepo: Repository<DesignVersionRecord>,
     @InjectRepository(MaterialItem) private readonly materialRepo: Repository<MaterialItem>,
     @InjectRepository(BudgetItem) private readonly budgetRepo: Repository<BudgetItem>,
     @InjectRepository(ConstructionNode) private readonly constructionRepo: Repository<ConstructionNode>
@@ -38,9 +40,21 @@ export class SeedService {
       expectedEndDate: '2026-09-18'
     }));
 
-    await this.designRepo.save([
+    const [planPhase, drawingPhase] = await this.designRepo.save([
       this.designRepo.create({ projectId: project.id, name: '方案设计', designerId: 'designer-001', status: PhaseStatus.Approved, version: 3, description: '开放式客餐厅与收纳墙方案。', fileUrls: ['/uploads/design-plan.pdf'], reviewComment: '通过，厨房动线保留。', reviewerId: 'owner-001' }),
       this.designRepo.create({ projectId: project.id, name: '施工图', designerId: 'designer-001', status: PhaseStatus.InProgress, version: 2, description: '水电点位和吊顶节点深化中。', fileUrls: ['/uploads/construction-v2.pdf'] })
+    ]);
+
+    await this.designRecordRepo.save([
+      this.designRecordRepo.create({ phaseId: planPhase.id, version: 1, action: DesignReviewAction.Submit, operatorId: 'designer-001', comment: '首版方案提交，请业主查收。', description: '首版平面布局方案。', fileUrls: ['/uploads/design-plan-v1.pdf'] }),
+      this.designRecordRepo.create({ phaseId: planPhase.id, version: 1, action: DesignReviewAction.Reject, operatorId: 'owner-001', comment: '客厅收纳不足，请调整。' }),
+      this.designRecordRepo.create({ phaseId: planPhase.id, version: 2, action: DesignReviewAction.Submit, operatorId: 'designer-001', comment: '已增加整墙收纳柜。', description: '增加收纳墙的第二版方案。', fileUrls: ['/uploads/design-plan-v2.pdf'] }),
+      this.designRecordRepo.create({ phaseId: planPhase.id, version: 2, action: DesignReviewAction.Reject, operatorId: 'owner-001', comment: '厨房动线需要保留。' }),
+      this.designRecordRepo.create({ phaseId: planPhase.id, version: 3, action: DesignReviewAction.Submit, operatorId: 'designer-001', comment: '保留厨房动线，客餐厅打通。', description: '开放式客餐厅与收纳墙方案。', fileUrls: ['/uploads/design-plan.pdf'] }),
+      this.designRecordRepo.create({ phaseId: planPhase.id, version: 3, action: DesignReviewAction.Approve, operatorId: 'owner-001', comment: '通过，厨房动线保留。' }),
+      this.designRecordRepo.create({ phaseId: drawingPhase.id, version: 1, action: DesignReviewAction.Submit, operatorId: 'designer-001', comment: '施工图初版提交。', description: '施工图初版。', fileUrls: ['/uploads/construction-v1.pdf'] }),
+      this.designRecordRepo.create({ phaseId: drawingPhase.id, version: 1, action: DesignReviewAction.Reject, operatorId: 'owner-001', comment: '水电点位标注不全，请补充。' }),
+      this.designRecordRepo.create({ phaseId: drawingPhase.id, version: 2, action: DesignReviewAction.Submit, operatorId: 'designer-001', comment: '已补全水电点位，待业主审核。', description: '水电点位和吊顶节点深化中。', fileUrls: ['/uploads/construction-v2.pdf'] })
     ]);
 
     await this.materialRepo.save([

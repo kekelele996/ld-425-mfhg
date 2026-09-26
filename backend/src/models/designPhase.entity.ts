@@ -1,6 +1,7 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { PhaseStatus } from '../types/enums';
 import { RenovationProject } from './project.entity';
+import { DesignVersionRecord } from './designVersionRecord.entity';
 
 @Entity('design_phases')
 export class DesignPhase {
@@ -36,4 +37,7 @@ export class DesignPhase {
 
   @Column({ nullable: true })
   reviewerId?: string;
+
+  @OneToMany(() => DesignVersionRecord, (record) => record.phase)
+  versionRecords: DesignVersionRecord[];
 }

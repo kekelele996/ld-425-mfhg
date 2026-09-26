@@ -23,6 +23,12 @@ export enum PhaseStatus {
   Approved = 'Approved'
 }
 
+export enum DesignReviewAction {
+  Submit = 'Submit',
+  Approve = 'Approve',
+  Reject = 'Reject'
+}
+
 export enum ConstructionPhase {
   Demolition = 'Demolition',
   Plumbing = 'Plumbing',
