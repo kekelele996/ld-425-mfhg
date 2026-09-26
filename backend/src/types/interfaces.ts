@@ -17,4 +17,5 @@ export interface AuditContext {
   action: string;
   entity: string;
   entityId?: string;
+  comment?: string;
 }

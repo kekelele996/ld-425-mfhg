@@ -2,6 +2,7 @@ import { Tag } from 'antd';
 
 const colorMap: Record<string, string> = {
   InProgress: 'processing',
+  Submitted: 'processing',
   Approved: 'success',
   Completed: 'success',
   Passed: 'success',

@@ -17,6 +17,9 @@ export class AuditLog {
   @Column({ nullable: true })
   entityId?: string;
 
+  @Column('text', { nullable: true })
+  comment?: string;
+
   @CreateDateColumn()
   createdAt: Date;
 }

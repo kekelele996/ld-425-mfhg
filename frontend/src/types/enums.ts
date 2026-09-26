@@ -19,8 +19,22 @@ export enum ProjectStatus {
 export enum PhaseStatus {
   NotStarted = 'NotStarted',
   InProgress = 'InProgress',
+  Submitted = 'Submitted',
   Revision = 'Revision',
   Approved = 'Approved'
+}
+
+export enum DesignReviewResult {
+  Approved = 'Approved',
+  Rejected = 'Rejected'
+}
+
+export enum UserRole {
+  Admin = 'Admin',
+  Designer = 'Designer',
+  Contractor = 'Contractor',
+  Owner = 'Owner',
+  ProjectManager = 'ProjectManager'
 }
 
 export enum ConstructionPhase {

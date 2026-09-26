@@ -1,6 +1,22 @@
 import { Steps } from 'antd';
-import { DesignPhase } from '../../types';
+import { DesignPhase, PhaseStatus } from '../../types';
 
 export function StepIndicator({ phases }: { phases: DesignPhase[] }) {
-  return <Steps size="small" items={phases.map((phase) => ({ title: phase.name, description: `v${phase.version}`, status: phase.status === 'Approved' ? 'finish' : 'process' }))} />;
+  return (
+    <Steps
+      size="small"
+      items={phases.map((phase) => ({
+        title: phase.name,
+        description: `v${phase.version}`,
+        status:
+          phase.status === PhaseStatus.Approved
+            ? 'finish'
+            : phase.status === PhaseStatus.Submitted
+              ? 'wait'
+              : phase.status === PhaseStatus.Revision
+                ? 'error'
+                : 'process'
+      }))}
+    />
+  );
 }

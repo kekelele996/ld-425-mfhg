@@ -5,6 +5,7 @@ import zhCN from 'antd/locale/zh_CN';
 import { useRoutes, BrowserRouter, Link, useLocation } from 'react-router-dom';
 import { routes } from './router';
 import { ErrorBoundary } from './ErrorBoundary';
+import { RoleSwitcher } from './components/common/RoleSwitcher';
 import './styles.css';
 
 function AppRoutes() {
@@ -30,6 +31,7 @@ function Shell() {
         />
       </Layout.Sider>
       <Layout.Content className="content">
+        <RoleSwitcher />
         <ErrorBoundary>
           <AppRoutes />
         </ErrorBoundary>

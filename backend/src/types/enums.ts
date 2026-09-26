@@ -28,8 +28,14 @@ export enum ProjectStatus {
 export enum PhaseStatus {
   NotStarted = 'NotStarted',
   InProgress = 'InProgress',
+  Submitted = 'Submitted',
   Revision = 'Revision',
   Approved = 'Approved'
+}
+
+export enum DesignReviewResult {
+  Approved = 'Approved',
+  Rejected = 'Rejected'
 }
 
 export enum PurchaseStatus {

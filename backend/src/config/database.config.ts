@@ -1,6 +1,7 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { RenovationProject } from '../models/project.entity';
 import { DesignPhase } from '../models/designPhase.entity';
+import { DesignVersion } from '../models/designVersion.entity';
 import { MaterialItem } from '../models/materialItem.entity';
 import { BudgetItem } from '../models/budgetItem.entity';
 import { ConstructionNode } from '../models/constructionNode.entity';
@@ -13,7 +14,7 @@ export const databaseConfig: TypeOrmModuleOptions = {
   username: process.env.DB_USER ?? 'renovation',
   password: process.env.DB_PASSWORD ?? 'renovation123',
   database: process.env.DB_NAME ?? 'home_renovation',
-  entities: [RenovationProject, DesignPhase, MaterialItem, BudgetItem, ConstructionNode, AuditLog],
+  entities: [RenovationProject, DesignPhase, DesignVersion, MaterialItem, BudgetItem, ConstructionNode, AuditLog],
   synchronize: true,
   logging: false
 };
